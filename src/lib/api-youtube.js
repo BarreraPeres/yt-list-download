@@ -3,32 +3,47 @@ tag.src = "https://www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-window.ytPlayer = null
 window.lista = null
-export async function apiYoutube(id_playlist) {
-    return new Promise((resolve, reject) => {
-        window.ytPlayer = new YT.Player("ytvideo", {
-            events: {
-                "onReady": loadVideo,
-                "onStateChange": onReadyPlay,
+window.ytPlayer = null
+export class ApiYoutube {
+
+    async playlistLoad(id) {
+        return new Promise((resolve, reject) => {
+            window.ytPlayer = new YT.Player("ytplayer", {
+                events: {
+                    "onReady": play,
+                    "onStateChange": OnReadyPlay
+                }
+            })
+            function play(e) {
+                ytPlayer.loadPlaylist({
+                    list: id,
+                    listType: "playlist"
+                })
+            }
+            function OnReadyPlay(e) {
+                setTimeout(setList(e), 5000)
+            }
+            function setList(e) {
+                window.lista = e.target.getPlaylist()
+                resolve()
             }
         })
-        function loadVideo(event) {
-            ytPlayer.loadPlaylist({
-                list: id_playlist,
-                listType: "playlist"
+    }
+
+    async videoLoad(id) {
+        return new Promise((resolve, reject) => {
+            window.ytPlayer = new YT.Player("ytplayer", {
+                videoId: id,
+                events: {
+                    "onReady": play
+                }
             })
-        }
-        function onReadyPlay(event) {
-            setTimeout(set(event), 6000)
-        }
 
-        function set(e) {
-            window.lista = e.target.getPlaylist()
-
-            resolve()
-        }
-
-
-    })
+            function play(e) {
+                e.target.playVideo()
+                resolve()
+            }
+        })
+    }
 }

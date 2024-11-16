@@ -7,7 +7,8 @@ const app = fastify()
 app.register(routes)
 
 app.register(fastifyCors, {
-    origin: "*"
+    origin: "*",
+    exposedHeaders: ["content-disposition"]
 })
 
 app.listen({ port: 3333 }).then((address) => {

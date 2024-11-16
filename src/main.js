@@ -1,12 +1,12 @@
 import './index.css'
 import { endLoader, startLoader } from './utils/loader.js'
-import { apiYoutube } from './lib/api-youtube.js'
-import { queue } from './lib/queue.js'
-import { getIdByLink } from './utils/get-id-by-link.js'
+import { ApiYoutube } from './lib/api-youtube.js'
+import { queue } from './utils/services/queue.js'
+import { getIdByLink } from './utils/services/get-id-by-link.js'
 
 document.querySelector('#app').innerHTML = `
 
-  <form id="FormYT" class="flex mb-6">    
+  <form id="FormYT" class="flex mb-6">
     <input 
     class="text-sm text-zinc-300 border border-emerald-800 hover:border-emerald-950 rounded-lg hover:bg-emerald-950 bg-emerald-900 focus:ring-emerald-950 focus:border-emerald-950 p-3 ps-10 w-[540px]"
     placeholder="Link da playlist do youtube... "
@@ -18,24 +18,42 @@ document.querySelector('#app').innerHTML = `
       </input> 
   </form>
 
-  <div id="ytvideo" class="flex w-[640px] h-[360px] bg-zinc-900 rounded-lg aspect-video"></div>
+  <div id="ytplayer" class="flex w-[640px] h-[360px] bg-zinc-900 rounded-lg aspect-video"></div>
   
 `
 
 document.getElementById("FormYT").addEventListener("submit", async (e) => {
   e.preventDefault()
   const url = document.getElementById("link").value
-  const { id_playlist } = await getIdByLink(url)
+  const { id_playlist, id_video } = await getIdByLink(url)
+
+  if (!id_playlist && !id_video) {
+    alert("Link inválido!!")
+    return
+  }
 
   try {
     await startLoader()
-    await apiYoutube(id_playlist)
-    await queue()
+
+    if (!id_playlist) {
+      const yt = new ApiYoutube()
+      console.log("inicando o download do seu video: ", id_video)
+      await yt.videoLoad(id_video)
+
+    } else {
+      const yt = new ApiYoutube()
+      console.log("inicando o download da sua playlist")
+      await yt.playlistLoad(id_playlist)
+      await queue()
+    }
   } catch (e) {
     console.log(e)
   } finally {
     endLoader()
   }
+
+
+
 
 })
 
