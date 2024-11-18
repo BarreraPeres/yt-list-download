@@ -3,7 +3,7 @@ tag.src = "https://www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-window.lista = null
+window.lista = []
 window.ytPlayer = null
 export class ApiYoutube {
 
@@ -42,6 +42,7 @@ export class ApiYoutube {
 
             function play(e) {
                 e.target.playVideo()
+                window.lista.push(id)
                 resolve()
             }
         })

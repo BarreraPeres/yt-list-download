@@ -23,37 +23,36 @@ document.querySelector('#app').innerHTML = `
 `
 
 document.getElementById("FormYT").addEventListener("submit", async (e) => {
-  e.preventDefault()
-  const url = document.getElementById("link").value
-  const { id_playlist, id_video } = await getIdByLink(url)
+    e.preventDefault()
+    const url = document.getElementById("link").value
+    const { id_playlist, id_video } = await getIdByLink(url)
 
-  if (!id_playlist && !id_video) {
-    alert("Link inválido!!")
-    return
-  }
-
-  try {
-    await startLoader()
-
-    if (!id_playlist) {
-      const yt = new ApiYoutube()
-      console.log("inicando o download do seu video: ", id_video)
-      await yt.videoLoad(id_video)
-
-    } else {
-      const yt = new ApiYoutube()
-      console.log("inicando o download da sua playlist")
-      await yt.playlistLoad(id_playlist)
-      await queue()
+    if (!id_playlist && !id_video) {
+        alert("Link inválido!!")
+        return
     }
-  } catch (e) {
-    console.log(e)
-  } finally {
-    endLoader()
-  }
+
+    try {
+        await startLoader()
+
+        if (!id_playlist) {
+            const yt = new ApiYoutube()
+            console.log("inicando o download do seu video")
+            await yt.videoLoad(id_video)
+
+        } else {
+            const yt = new ApiYoutube()
+            console.log("inicando o download da sua playlist")
+            await yt.playlistLoad(id_playlist)
+            await queue()
+        }
+    } catch (e) {
+        console.log(e)
+    } finally {
+        endLoader()
+    }
 
 
 
 
 })
-

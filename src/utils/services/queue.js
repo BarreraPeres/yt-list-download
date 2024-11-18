@@ -3,22 +3,26 @@ import { DownloadProgress } from "../download-progress.js"
 import fileDownload from "js-file-download"
 
 const options = {
-    method: "GET",
-    onDownloadProgress: (e) => {
-        DownloadProgress(e.bytes * 100 / e.bytes)
+    responseType: "blob",
+    headers: {
+        "content-type": "audio/mpeg"
     },
-    responseType: "blob"
+    onDownloadProgress: function (progressEvent) {
+        DownloadProgress(progressEvent.bytes * 100 / progressEvent.bytes)
+    }
 }
 
 export async function queue() {
     for (let i = 0; i < window.lista.length; i++) {
         try {
 
-            const { data, headers } = await axios.get(`http://localhost:3333/download/${window.lista[i]}`, options)
-            const [filenames, title] = headers["content-disposition"].split("=")
-            fileDownload(data, title)
+            await axios.get(`http://localhost:3333/download/${window.lista[i]}`, options)
+                .then((res) => {
+                    const [filenames, title] = res.headers["content-disposition"].split("=")
+                    fileDownload(res.data, title)
+                    alert("Download Concluido " + title)
+                })
 
-            alert("Download Concluido ")
 
         } catch (e) {
             console.log(e)
