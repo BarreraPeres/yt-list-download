@@ -39,7 +39,7 @@ document.getElementById("FormYT").addEventListener("submit", async (e) => {
             const yt = new ApiYoutube()
             console.log("inicando o download do seu video")
             await yt.videoLoad(id_video)
-
+            await queue()
         } else {
             const yt = new ApiYoutube()
             console.log("inicando o download da sua playlist")
