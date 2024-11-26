@@ -2,7 +2,7 @@ import fastifyCors from "@fastify/cors"
 import fastify from "fastify"
 import { routes } from "./controllers/routes.js"
 
-const app = fastify()
+export const app = fastify()
 
 app.register(routes)
 
