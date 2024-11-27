@@ -2,6 +2,7 @@ import ytdl from "@distube/ytdl-core"
 import { YoutubeMp3 } from "../use-cases/download-mp3.js"
 import path from 'node:path';
 import fs from 'node:fs';
+import { excludeDownloadMp3 } from "../use-cases/exclude-download-mp3.js";
 
 export async function downloadController(request, reply) {
     const audioMp3 = new YoutubeMp3()
@@ -26,6 +27,8 @@ export async function downloadController(request, reply) {
     } catch (e) {
         console.log(e)
         return reply.status(500).send({ message: "erro ao baixar" })
+    } finally {
+        await excludeDownloadMp3()
     }
 
 }
