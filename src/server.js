@@ -1,6 +1,7 @@
 import fastifyCors from "@fastify/cors"
 import fastify from "fastify"
 import { routes } from "./controllers/routes.js"
+import { env } from "./env/env.js"
 
 export const app = fastify()
 
@@ -11,6 +12,6 @@ app.register(fastifyCors, {
     exposedHeaders: ["content-disposition"]
 })
 
-app.listen({ port: 3333 }).then((address) => {
+app.listen({ port: env.PORT }).then((address) => {
     console.log(`server is running in ${address}`)
 })
