@@ -20,11 +20,12 @@
     "vite": "^5.4.10"
   },
   "dependencies": {
-    "@distube/ytdl-core": "^4.15.1",
+    "@distube/ytdl-core": "4.15.6",
     "@fastify/cors": "^10.0.1",
     "axios": "^1.7.7",
     "cheerio": "^1.0.0",
     "fastify": "^5.1.0",
-    "js-file-download": "^0.4.12"
+    "js-file-download": "^0.4.12",
+    "zod": "^3.24.1"
   }
 }
