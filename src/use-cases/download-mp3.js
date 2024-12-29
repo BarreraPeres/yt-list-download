@@ -2,10 +2,12 @@ import ytdl from "@distube/ytdl-core";
 import fs from "node:fs"
 import path from "node:path";
 import { finished } from 'node:stream/promises';
+import { createFolder } from "../utils/create-folder.js";
 export class YoutubeMp3 {
 
     async download(url, title) {
-        const writer = fs.createWriteStream(path.resolve("./src/downloads/", `${title}.mp3`))
+        const folder = await createFolder()
+        const writer = fs.createWriteStream(path.resolve(folder, `${title}.mp3`))
 
         ytdl(url, {
             filter: "audioonly",
