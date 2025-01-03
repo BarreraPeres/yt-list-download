@@ -2,36 +2,38 @@ import { after, describe, it } from "node:test"
 import assert from "node:assert"
 import fs, { unlink } from "node:fs"
 import { YoutubeMp3 } from "../../../use-cases/download-mp3.js"
+import { env } from "../../../env/env.js"
 
 after(async () => {
-    const path = "./src/downloads/audio.mp3"
-    unlink(path, () => { })
+    unlink(AUDIO_TEST_FILEPATH, () => { })
 })
 
-describe("Youtube Downloader mp3 Use Case", () => {
+const AUDIO_TEST_FILEPATH = env.AUDIO_TEST_FILEPATH
 
-    it("should be possible to inicialize youtube", async () => {
+if (AUDIO_TEST_FILEPATH) {
+    describe("Youtube Downloader mp3 Use Case", () => {
 
-        const yt = new YoutubeMp3()
+        it("should be possible to inicialize youtube", async () => {
 
-        assert(yt)
-        assert(yt.download)
+            const yt = new YoutubeMp3()
+
+            assert(yt)
+            assert(yt.download)
+        })
+
+        it("it should be possible to downloader a video", async () => {
+            const yt = new YoutubeMp3()
+            const url = "https://www.youtube.com/watch?v=30NRBUSqvnQ"
+            const title = "audio"
+
+            await yt.download(url, `${title}`, AUDIO_TEST_FILEPATH)
+
+            const statResponse = await fs.promises.stat(AUDIO_TEST_FILEPATH)
+
+            assert(statResponse)
+            assert(statResponse.dev)
+            assert(statResponse.mode)
+        })
+
     })
-
-    it("it should be possible to downloader a video", async () => {
-        const yt = new YoutubeMp3()
-        const url = "https://www.youtube.com/watch?v=30NRBUSqvnQ"
-        const title = "audio"
-
-        await yt.download(url, `${title}`)
-
-        const filepath = `./src/downloads/${title}.mp3`
-
-        const statResponse = await fs.promises.stat(filepath)
-
-        assert(statResponse)
-        assert(statResponse.dev)
-        assert(statResponse.mode)
-    })
-
-})
+}

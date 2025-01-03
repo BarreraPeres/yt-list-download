@@ -3,6 +3,7 @@ import { YoutubeMp3 } from "../use-cases/download-mp3.js"
 import path from 'node:path';
 import fs from 'node:fs';
 import { excludeDownloadMp3 } from "../use-cases/exclude-download-mp3.js";
+import { createFolder } from "../utils/create-folder.js";
 
 export async function downloadController(request, reply) {
     const audioMp3 = new YoutubeMp3()
@@ -13,9 +14,11 @@ export async function downloadController(request, reply) {
         const url = `https://www.youtube.com/watch?v=${id_video}`
         const { videoDetails } = await ytdl.getBasicInfo(url)
 
-        await audioMp3.download(url, videoDetails.title)
+        const folder = await createFolder()
 
-        const filepath = path.resolve("./src/downloads/", `${videoDetails.title}.mp3`)
+        await audioMp3.download(url, videoDetails.title, folder)
+
+        const filepath = path.resolve(folder, `${videoDetails.title}.mp3`)
 
         const audio_read = fs.createReadStream(filepath)
 
